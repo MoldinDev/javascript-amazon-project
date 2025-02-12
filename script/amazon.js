@@ -1,32 +1,6 @@
 let productsHtml = ""
+let cart = []
 
-const products = [{
-  name: 'Black and Gray Athletic Cotton Socks - 6 Pairs',
-  image: 'images/products/athletic-cotton-socks-6-pairs.jpg',
-  priceCents: 1090,
-  ratings: {
-    stars: 4.5,
-    count: 87
-  }
-},
-{
-  name: 'Intermediate Size Basketball',
-  image: 'images/products/intermediate-composite-basketball.jpg',
-  priceCents: 2095,
-  ratings: {
-    stars: 4,
-    count: 127
-  }
-}, 
-{
-  name: 'Adults Plain Cotton T-Shirt - 2 Pack',
-  image: 'images/products/adults-plain-cotton-tshirt-2-pack-teal.jpg',
-  priceCents: 799,
-  ratings: {
-    stars: 4.5,
-    count: 56
-  }
-}]
 
 products.forEach((product) => {
   const html = `
@@ -42,9 +16,9 @@ products.forEach((product) => {
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${product.ratings.stars*10}.png">
+              src="images/ratings/rating-${product.rating.stars*10}.png">
             <div class="product-rating-count link-primary">
-              ${product.ratings.count}
+              ${product.rating.count}
             </div>
           </div>
 
@@ -81,6 +55,14 @@ products.forEach((product) => {
   `
 
   productsHtml += html
+
+  document.querySelectorAll('.add-to-cart-button').forEach((addButton, index) => {
+    addButton.addEventListener('click', (e) => {
+      cart.push(products[1])
+      document.querySelector('.cart-quantity').innerHTML = 4
+    })
+  })
+  
 })
 
 document.querySelector('.products-grid').innerHTML = productsHtml
