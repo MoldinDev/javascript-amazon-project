@@ -1,4 +1,5 @@
-import {cart} from '../data/cart.js'
+import {cart, addToCart, totalCart, removePopUpEffect} from '../data/cart.js'
+import {products} from '../data/products.js'
 
 let productsHtml = ""
 
@@ -55,13 +56,6 @@ products.forEach((product) => {
   `
 
   productsHtml += html
-
-  document.querySelectorAll('.add-to-cart-button').forEach((addButton, index) => {
-    addButton.addEventListener('click', (e) => {
-      cart.push(products[1])
-      document.querySelector('.cart-quantity').innerHTML = 4
-    })
-  })
   
 })
 
@@ -70,26 +64,20 @@ document.querySelector('.products-grid').innerHTML = productsHtml
 document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
   const option = document.querySelectorAll('.pqc')
   const productId = button.dataset.productId
-  const addedPopUps = document.querySelectorAll('.added-to-cart')
-  const addedPopUp = addedPopUps[index]
+  const addedPopUp = document.querySelectorAll('.added-to-cart')[index]
   let removePopUp
 
+  
   button.addEventListener('click', ()=> {
-    if (cart[productId]){
-      cart[productId] += Number(option[index].value)
-    } else {
-      cart[productId] = Number(option[index].value)
-    }
-    let cartCount = 0
-    for (let key in cart) {
-      cartCount += cart[key]
-    }
+    
+    addToCart(productId, option, index)
+
+    // Menambahkan pop-up saat 'Add to cart' ditekan
     addedPopUp.classList.add('opacity-1')
     clearTimeout(removePopUp)
-    removePopUp = setTimeout(() => {
-      addedPopUp.classList.remove('opacity-1')
-    },1500)
-    document.querySelector('.cart-quantity').innerHTML = cartCount
-    console.log(cart)
+    removePopUp = removePopUpEffect(addedPopUp)
+
+    
+    document.querySelector('.cart-quantity').innerHTML = totalCart(cart)
   })
 })
