@@ -1,6 +1,6 @@
-let productsHtml = ""
-let cart = {}
+import {cart} from '../data/cart.js'
 
+let productsHtml = ""
 
 products.forEach((product) => {
   const html = `
