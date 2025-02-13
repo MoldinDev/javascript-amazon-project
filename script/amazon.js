@@ -70,6 +70,10 @@ document.querySelector('.products-grid').innerHTML = productsHtml
 document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
   const option = document.querySelectorAll('.pqc')
   const productId = button.dataset.productId
+  const addedPopUps = document.querySelectorAll('.added-to-cart')
+  const addedPopUp = addedPopUps[index]
+  let removePopUp
+
   button.addEventListener('click', ()=> {
     if (cart[productId]){
       cart[productId] += Number(option[index].value)
@@ -80,6 +84,11 @@ document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
     for (let key in cart) {
       cartCount += cart[key]
     }
+    addedPopUp.classList.add('opacity-1')
+    clearTimeout(removePopUp)
+    removePopUp = setTimeout(() => {
+      addedPopUp.classList.remove('opacity-1')
+    },1500)
     document.querySelector('.cart-quantity').innerHTML = cartCount
     console.log(cart)
   })
