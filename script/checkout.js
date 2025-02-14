@@ -2,7 +2,7 @@ import {products} from '../data/products.js'
 import { cart } from '../data/cart.js'
 
 const productss = products
-let cartHtml = ""
+let cartHtml = ''
 let subTotalCost = 0
 let totalItems = 0
 const shippingCost = 499
@@ -17,7 +17,7 @@ console.log(cartItems)
 
 cartItems.forEach((cartItem, index) => {
   const html = `
-            <div class="cart-item-container">
+            <div class="cart-item-container container-${cartItem.id}">
             <div class="delivery-date">
               Delivery date: Tuesday, June 21
             </div>
@@ -40,7 +40,7 @@ cartItems.forEach((cartItem, index) => {
                   <span class="update-quantity-link link-primary">
                     Update
                   </span>
-                  <span class="delete-quantity-link link-primary">
+                  <span class="delete-quantity-link link-primary" data-product-id="${cartItem.id}">
                     Delete
                   </span>
                 </div>
@@ -96,15 +96,47 @@ cartItems.forEach((cartItem, index) => {
   totalItems += cartItem.count
   cartHtml += html
   subTotalCost += (cartItem.priceCents * cartItem.count)
+
 })
 
-const totalBeforeTax = (subTotalCost + shippingCost)
-const tax = (subTotalCost+shippingCost) * 0.1
+let totalBeforeTax = (subTotalCost + shippingCost)
+let tax = (subTotalCost+shippingCost) * 0.1
 
+document.querySelector('.order-summary').innerHTML = cartHtml
 document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
 document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
 document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
 document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
 document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
-document.querySelector('.order-summary').innerHTML = cartHtml
 document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
+
+document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
+  deleteBtn.addEventListener('click', () => {
+    const productId = deleteBtn.dataset.productId
+    const pengurang = cartItems.filter((cartItem) => cartItem.id == productId)[0]['count']
+    totalItems = totalItems - pengurang
+    subTotalCost = 0
+    totalBeforeTax = 0
+    tax = 0
+
+    const container = document.querySelector(`.container-${productId}`)
+    container.remove()
+ 
+    cartItems = cartItems.filter((cartItem) => productId != cartItem.id)
+    console.log(cartItems)
+    
+    cartItems.forEach((cartItem) => {
+      subTotalCost += (cartItem.priceCents * cartItem.count)
+    })
+    
+    totalBeforeTax = subTotalCost + shippingCost
+    tax = (subTotalCost+shippingCost) * 0.1
+    
+    document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
+    document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
+    document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
+    document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
+    document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
+    document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
+  })
+})
