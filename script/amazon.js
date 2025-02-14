@@ -1,7 +1,8 @@
-import {cart, addToCart, totalCart, removePopUpEffect} from '../data/cart.js'
+import {cart as caret, addToCart, totalCart, removePopUpEffect} from '../data/cart.js'
 import {products} from '../data/products.js'
 
 let productsHtml = ""
+const cart = caret
 
 products.forEach((product) => {
   const html = `
@@ -59,7 +60,8 @@ products.forEach((product) => {
   
 })
 
-document.querySelector('.products-grid').innerHTML = productsHtml
+let productContainer = document.querySelector('.products-grid');
+if (productContainer) productContainer.innerHTML = productsHtml;
 
 document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
   const option = document.querySelectorAll('.pqc')

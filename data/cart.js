@@ -1,4 +1,7 @@
-export const cart = []
+export const cart = {
+  "3ebe75dc-64d2-4137-8860-1f5a963e534b": 5,
+  "8c9c52b5-5a19-4bcb-a5d1-158a74287c53": 2
+}
 
 export function addToCart(productId, option, index) {
   if (cart[productId]){
