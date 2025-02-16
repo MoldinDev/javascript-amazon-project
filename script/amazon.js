@@ -2,7 +2,8 @@ import {cart as caret, addToCart, totalCart, removePopUpEffect} from '../data/ca
 import {products} from '../data/products.js'
 
 let productsHtml = ""
-const cart = caret
+let cart = caret
+document.querySelector('.cart-quantity').innerHTML = totalCart(cart)
 
 products.forEach((product) => {
   const html = `
@@ -72,14 +73,13 @@ document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
   
   button.addEventListener('click', ()=> {
     
-    addToCart(productId, option, index)
+    cart = addToCart(cart, productId, option, index)
 
     // Menambahkan pop-up saat 'Add to cart' ditekan
     addedPopUp.classList.add('opacity-1')
     clearTimeout(removePopUp)
     removePopUp = removePopUpEffect(addedPopUp)
 
-    
     document.querySelector('.cart-quantity').innerHTML = totalCart(cart)
   })
 })

@@ -1,5 +1,5 @@
 import {products} from '../data/products.js'
-import { cart, checkoutCalculate, deleteHtml } from '../data/cart.js'
+import { cart, checkoutCalculate, deleteHtml, updateCart } from '../data/cart.js'
 
 const productss = products
 let cartHtml = ''
@@ -10,6 +10,7 @@ let tax = 0
 const shippingCost = 499
 
 // Get Cart items (id -> object)
+console.log(cart)
 let cartItems = productss.filter(product => Object.keys(cart).includes(product.id))
 console.log(cartItems[0]['id'])
 cartItems.forEach((cartItem, index) => {
@@ -125,6 +126,7 @@ document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
     
     // Update cart items
     cartItems = cartItems.filter((cartItem) => productId != cartItem.id)
+    updateCart(cartItems)
     
     // Update subtotal cost
     cartItems.forEach((cartItem) => {
