@@ -12,7 +12,6 @@ if (Object.keys(cart) <= 0) {
   window.location.href = 'amazon.html'
 }
 
-const productss = products
 let cartHtml = ''
 let subTotalCost = 0
 let totalItems = 0
@@ -21,7 +20,7 @@ let tax = 0
 const shippingCost = []
 
 // Get Cart items (id -> object)
-let cartItems = productss.filter(product => Object.keys(cart).includes(product.id))
+let cartItems = products.filter(product => Object.keys(cart).includes(product.id))
 console.log(cartItems[0]['id'])
 cartItems.forEach((cartItem, index) => {
   cartItems[index]['count'] = cart[cartItem['id']]
@@ -155,7 +154,7 @@ tax = (subTotalCost+eval(shippingCost.join('+'))) * 0.1
 checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost, eval(shippingCost.join('+')))
 
 
-document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
+document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn, index) => {
   deleteBtn.addEventListener('click', () => {
     const productId = deleteBtn.dataset.productId
     const pengurang = cartItems.filter((cartItem) => cartItem.id == productId)[0]['count']
@@ -163,6 +162,7 @@ document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
     subTotalCost = 0
     totalBeforeTax = 0
     tax = 0
+    shippingCost[index] = 0
 
     deleteHtml(productId)
     
@@ -176,13 +176,14 @@ document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
     })
     
     // Update total before tax
-    totalBeforeTax = subTotalCost + shippingCost
-    tax = (subTotalCost+shippingCost) * 0.1
+    totalBeforeTax = subTotalCost + eval(shippingCost.join('+'))
+    tax = (subTotalCost+eval(shippingCost.join('+'))) * 0.1
     
     // Update count render
-    checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost)
+    checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost, eval(shippingCost.join('+')))
     if (subTotalCost <= 0) {
       window.location.href = 'amazon.html'
     }
+    console.log(shippingCost)
   })
 })
