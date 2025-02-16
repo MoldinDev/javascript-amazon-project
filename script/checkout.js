@@ -1,6 +1,11 @@
 import {products} from '../data/products.js'
 import { cart, checkoutCalculate, deleteHtml, updateCart } from '../data/cart.js'
 
+// Kalau cart kosong, navigate ke amazon.html
+if (Object.keys(cart) <= 0) {
+  window.location.href = 'amazon.html'
+}
+
 const productss = products
 let cartHtml = ''
 let subTotalCost = 0
@@ -10,7 +15,6 @@ let tax = 0
 const shippingCost = 499
 
 // Get Cart items (id -> object)
-console.log(cart)
 let cartItems = productss.filter(product => Object.keys(cart).includes(product.id))
 console.log(cartItems[0]['id'])
 cartItems.forEach((cartItem, index) => {
@@ -139,5 +143,8 @@ document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
     
     // Update count render
     checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost)
+    if (subTotalCost <= 0) {
+      window.location.href = 'amazon.html'
+    }
   })
 })
