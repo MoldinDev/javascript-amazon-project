@@ -1,20 +1,23 @@
 import {products} from '../data/products.js'
-import { cart } from '../data/cart.js'
+import { cart, checkoutCalculate, deleteHtml } from '../data/cart.js'
 
 const productss = products
 let cartHtml = ''
 let subTotalCost = 0
 let totalItems = 0
+let totalBeforeTax = 0
+let tax = 0
 const shippingCost = 499
 
+// Get Cart items (id -> object)
 let cartItems = productss.filter(product => Object.keys(cart).includes(product.id))
 console.log(cartItems[0]['id'])
 cartItems.forEach((cartItem, index) => {
   cartItems[index]['count'] = cart[cartItem['id']]
 })
 
-console.log(cartItems)
 
+// Generate html cart
 cartItems.forEach((cartItem, index) => {
   const html = `
             <div class="cart-item-container container-${cartItem.id}">
@@ -99,16 +102,15 @@ cartItems.forEach((cartItem, index) => {
 
 })
 
-let totalBeforeTax = (subTotalCost + shippingCost)
-let tax = (subTotalCost+shippingCost) * 0.1
+totalBeforeTax = (subTotalCost + shippingCost)
+tax = (subTotalCost+shippingCost) * 0.1
 
+// Render cart items html display
 document.querySelector('.order-summary').innerHTML = cartHtml
-document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
-document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
-document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
-document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
-document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
-document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
+
+// Render Calculated cost
+checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost)
+
 
 document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
   deleteBtn.addEventListener('click', () => {
@@ -119,24 +121,21 @@ document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
     totalBeforeTax = 0
     tax = 0
 
-    const container = document.querySelector(`.container-${productId}`)
-    container.remove()
- 
-    cartItems = cartItems.filter((cartItem) => productId != cartItem.id)
-    console.log(cartItems)
+    deleteHtml(productId)
     
+    // Update cart items
+    cartItems = cartItems.filter((cartItem) => productId != cartItem.id)
+    
+    // Update subtotal cost
     cartItems.forEach((cartItem) => {
       subTotalCost += (cartItem.priceCents * cartItem.count)
     })
     
+    // Update total before tax
     totalBeforeTax = subTotalCost + shippingCost
     tax = (subTotalCost+shippingCost) * 0.1
     
-    document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
-    document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
-    document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
-    document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
-    document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
-    document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
+    // Update count render
+    checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost)
   })
 })

@@ -23,8 +23,22 @@ export function totalCart(cartItems) {
 
 }
 
+export function deleteHtml(id) {
+  const container = document.querySelector(`.container-${id}`)
+  container.remove()
+}
+
 export function removePopUpEffect(element) {
   return setTimeout(() => {
     element.classList.remove('opacity-1')
   },1500)
+}
+
+export function checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost) {
+  document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
+  document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
+  document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
+  document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
+  document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
+  document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
 }
