@@ -53,11 +53,12 @@ export function removePopUpEffect(element) {
   },1500)
 }
 
-export function checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost) {
+export function checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost, shippingCost) {
   document.querySelector('.checkout-header-middle-section').innerHTML = `Items (${totalItems})`
   document.querySelector('.total-before-tax').innerHTML = '$' + totalBeforeTax/100
   document.querySelector('.estimated-tax').innerHTML = '$' + Math.round(tax)/100
   document.querySelector('.total-items').innerHTML = `Items (${totalItems})`
   document.querySelector('.sub-total-cost').innerHTML = '$' + subTotalCost/100
   document.querySelector('.total-cost').innerHTML = '$' + Math.round(totalBeforeTax + tax)/100
+  document.querySelector('.shipping-cost').innerHTML = '$' + shippingCost/100
 }

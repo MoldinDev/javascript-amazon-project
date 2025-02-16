@@ -1,5 +1,11 @@
 import {products} from '../data/products.js'
 import { cart, checkoutCalculate, deleteHtml, updateCart } from '../data/cart.js'
+import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js'
+
+const today = dayjs()
+const next1 = today.add(1, 'days').format('dddd, MMMM DD')
+const next3 = today.add(3, 'days').format('dddd, MMMM DD')
+const next7 = today.add(7, 'days').format('dddd, MMMM DD')
 
 // Kalau cart kosong, navigate ke amazon.html
 if (Object.keys(cart) <= 0) {
@@ -12,7 +18,7 @@ let subTotalCost = 0
 let totalItems = 0
 let totalBeforeTax = 0
 let tax = 0
-const shippingCost = 499
+const shippingCost = []
 
 // Get Cart items (id -> object)
 let cartItems = productss.filter(product => Object.keys(cart).includes(product.id))
@@ -24,10 +30,11 @@ cartItems.forEach((cartItem, index) => {
 
 // Generate html cart
 cartItems.forEach((cartItem, index) => {
+  shippingCost[index] = 0
   const html = `
             <div class="cart-item-container container-${cartItem.id}">
             <div class="delivery-date">
-              Delivery date: Tuesday, June 21
+              ${next7}
             </div>
 
             <div class="cart-item-details-grid">
@@ -60,11 +67,14 @@ cartItems.forEach((cartItem, index) => {
                 </div>
                 <div class="delivery-option">
                   <input type="radio" checked
+                  data-delivery-date='${next7}'
+                  data-index=${index}
+                  data-sc=0
                     class="delivery-option-input"
                     name="delivery-option-${index}">
                   <div>
                     <div class="delivery-option-date">
-                      Tuesday, June 21
+                      ${next7}
                     </div>
                     <div class="delivery-option-price">
                       FREE Shipping
@@ -73,11 +83,14 @@ cartItems.forEach((cartItem, index) => {
                 </div>
                 <div class="delivery-option">
                   <input type="radio"
+                  data-delivery-date='${next3}'
+                  data-index=${index}
+                  data-sc=499
                     class="delivery-option-input"
                     name="delivery-option-${index}">
                   <div>
                     <div class="delivery-option-date">
-                      Wednesday, June 15
+                       ${next3}
                     </div>
                     <div class="delivery-option-price">
                       $4.99 - Shipping
@@ -86,11 +99,14 @@ cartItems.forEach((cartItem, index) => {
                 </div>
                 <div class="delivery-option">
                   <input type="radio"
+                  data-delivery-date='${next1}'
+                  data-index=${index}
+                  data-sc=999
                     class="delivery-option-input"
                     name="delivery-option-${index}">
                   <div>
                     <div class="delivery-option-date">
-                      Monday, June 13
+                       ${next1}
                     </div>
                     <div class="delivery-option-price">
                       $9.99 - Shipping
@@ -107,14 +123,36 @@ cartItems.forEach((cartItem, index) => {
 
 })
 
-totalBeforeTax = (subTotalCost + shippingCost)
-tax = (subTotalCost+shippingCost) * 0.1
-
 // Render cart items html display
 document.querySelector('.order-summary').innerHTML = cartHtml
 
+document.querySelectorAll('input[type="radio"]').forEach((radio) => {
+  radio.addEventListener('change', () => {
+    const deliveryDate = radio.dataset.deliveryDate
+    const titleIndex = radio.dataset.index
+    const deliveryCost = radio.dataset.sc
+    document.querySelectorAll('.delivery-date').forEach((title, index) => {
+      if(index == titleIndex) {
+        title.innerHTML = deliveryDate
+        shippingCost[titleIndex] = deliveryCost
+        console.log(shippingCost)
+      }
+    })
+        
+        // Update total before tax
+        totalBeforeTax = subTotalCost + eval(shippingCost.join('+'))
+        tax = (subTotalCost+eval(shippingCost.join('+'))) * 0.1
+        
+        // Update count render
+        checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost, eval(shippingCost.join('+')))
+  })
+})
+
+totalBeforeTax = (subTotalCost + eval(shippingCost.join('+')))
+tax = (subTotalCost+eval(shippingCost.join('+'))) * 0.1
+
 // Render Calculated cost
-checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost)
+checkoutCalculate(totalItems, totalBeforeTax, tax, subTotalCost, eval(shippingCost.join('+')))
 
 
 document.querySelectorAll('.delete-quantity-link').forEach((deleteBtn) => {
