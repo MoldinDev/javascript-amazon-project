@@ -83,3 +83,9 @@ document.querySelectorAll('.add-to-cart-button').forEach((button, index) => {
     document.querySelector('.cart-quantity').innerHTML = totalCart(cart)
   })
 })
+
+document.querySelector('.cart-link').addEventListener('click', () => {
+  if (totalCart(cart) > 0) {
+    window.location.href = 'checkout.html'
+  }
+})
